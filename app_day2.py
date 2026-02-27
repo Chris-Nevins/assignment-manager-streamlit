@@ -4,6 +4,8 @@ st.title("Course Management App")
 st.header("Assignment Management")
 st.subheader("Dashboard")
 
+next_assignment_id_number = 3
+
 st.divider()
 st.markdown("----------")
 
@@ -43,7 +45,39 @@ if assignment_type2 == "other":
 
 due_date = st.date_input("Due Date")
 
-btn_save = st.button("Save", width="stretch")
+btn_save = st.button("Save", width="stretch", disabled=False)
+
+import time
+import json
+from pathlib import Path
+
+json_path = Path("assignments.json")
+
 
 if btn_save:
-    st.warning("Working on it.....")
+    if not title:
+        st.warning("Title needs to be provided!")
+    else:
+        with st.spinner("Assignment is being reached....."):
+            time.sleep(5)
+
+            new_assignment_id = "HW" + str(next_assignment_id_number)
+            next_assignment_id_number += 1
+
+            assignments.append(
+                {
+                    "id":new_assignment_id,
+                    "title": title,
+                    "description": description,
+                    "points": points,
+                    "type": assignment_type
+                }
+            )
+
+            #record into json file
+            with json_path.open("w",encoding="utf-8") as f:
+                json.dump(assignments,f)
+
+            st.success("New Assignement is recorded!")
+            st.info("This is a new assignment")
+            st.dataframe(assignments)
