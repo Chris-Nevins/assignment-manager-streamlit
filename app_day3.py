@@ -2,6 +2,12 @@ import streamlit as st
 import time
 import json
 from pathlib import Path
+
+st.set_page_config(page_title= "Course Management", 
+                   page_icon="", 
+                   layout="centered", 
+                   initial_sidebar_state="collapsed")
+
 # Be sure to run on terminal "streamlit run *file name*.py"
 st.title("Course Management App")
 st.divider()
@@ -39,6 +45,25 @@ with tab1:
     tab_option = st.radio("View/Search", ["View", "Search"], horizontal=True)
     if tab_option == "View":
         st.dataframe(assignments)
+    else:
+        titles = []
+        for assignment in assignments:
+            titles.append(assignment["title"])
+
+        selected_title = st.selectbox("Select a title", titles, key="selected_title")
+
+        selected_assignement = {}
+
+        for assignment in assignments:
+            if assignment["title"] == selected_title:
+                selected_assignement = assignment
+                break
+
+        if selected_assignement:
+            with st.expander("Assignment Details", expanded=True):
+                st.markdown(f"### Title: {selected_assignement["title"]}")
+                st.markdown(f"Description: {selected_assignement["description"]}")
+                st.markdown(f"Type: **{selected_assignement["type"]}**")
 
 with tab2:
     st.markdown("## Add New Assignment")
@@ -88,4 +113,34 @@ with tab2:
                 st.dataframe(assignments)
 
 with tab3:
-    st.info("maybe coming soon...")
+    st.markdown("## Update an Assignment")
+    titles = []
+
+    for assignment in assignments:
+        titles.append(assignment["title"])
+
+    selected_item = st.selectbox("Select an assignment", titles, key="selected_title_edit")
+    st.rerun()
+
+    assignemnt_edit = {}
+    for assignment in assignments:
+        if assignment["title"] == selected_item:
+            assignemnt_edit = assignment
+            break
+
+    if assignemnt_edit:
+        edit_title = st.text_input("Title", key="edit_title")
+        edit_description = st.text_area("Description", key="edit_description", value= assignemnt_edit['description'])
+
+
+    btn_update = st.button("Update", key="update_button", type="secondary", use_container_width=True)
+    if btn_update:
+        with st.spinner("Updating..."):
+            time.sleep(5)
+            assignemnt_edit["title"] = edit_title
+            assignemnt_edit["description"] = edit_description
+
+            with json_path.open("w") as f:
+                json.dump(assignments,f)
+
+            st.success("Updated...")
