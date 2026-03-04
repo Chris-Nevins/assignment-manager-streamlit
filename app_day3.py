@@ -55,15 +55,18 @@ with tab1:
         selected_assignement = {}
 
         for assignment in assignments:
-            if assignment["title"] == selected_title:
+            if assignment['title'] == selected_title:
                 selected_assignement = assignment
                 break
+        
+        st.divider()
+        selected_assignement = st.selectbox("Select Title", options=assignments, format_func=lambda x: f"{x['title']} ({x['type']})")
 
         if selected_assignement:
             with st.expander("Assignment Details", expanded=True):
-                st.markdown(f"### Title: {selected_assignement["title"]}")
-                st.markdown(f"Description: {selected_assignement["description"]}")
-                st.markdown(f"Type: **{selected_assignement["type"]}**")
+                st.markdown(f"### Title: {selected_assignement['title']}")
+                st.markdown(f"Description: {selected_assignement['description']}")
+                st.markdown(f"Type: **{selected_assignement['type']}**")
 
 with tab2:
     st.markdown("## Add New Assignment")
@@ -110,37 +113,47 @@ with tab2:
 
                 st.success("New Assignement is recorded!")
                 st.info("This is a new assignment")
-                st.dataframe(assignments)
+                time.sleep(4)
+                #st.dataframe(assignments)
+                st.rerun()
 
 with tab3:
     st.markdown("## Update an Assignment")
     titles = []
 
     for assignment in assignments:
-        titles.append(assignment["title"])
+        titles.append(assignment['title'])
 
     selected_item = st.selectbox("Select an assignment", titles, key="selected_title_edit")
-    st.rerun()
 
-    assignemnt_edit = {}
+    assignment_edit = {}
     for assignment in assignments:
-        if assignment["title"] == selected_item:
-            assignemnt_edit = assignment
+        if assignment['title'] == selected_item:
+            assignment_edit = assignment
             break
 
-    if assignemnt_edit:
-        edit_title = st.text_input("Title", key="edit_title")
-        edit_description = st.text_area("Description", key="edit_description", value= assignemnt_edit['description'])
+    if assignment_edit:
+        edit_title = st.text_input("Title", key=f"edit_title_{assignment_edit['id']}", value= assignment_edit['title'])
+        edit_description = st.text_area("Description", key=f"edit_description_{assignment_edit['id']}", value= assignment_edit['description'])
 
+        type_options = ['Homework', 'Lab']
+        selected_index = type_options.index(assignment_edit['type'])
+
+        edit_type = st.radio("Type", type_options, key=f"edit_type_{assignment_edit['id']}", index= selected_index)
 
     btn_update = st.button("Update", key="update_button", type="secondary", use_container_width=True)
     if btn_update:
         with st.spinner("Updating..."):
             time.sleep(5)
-            assignemnt_edit["title"] = edit_title
-            assignemnt_edit["description"] = edit_description
+            assignment_edit["title"] = edit_title
+            assignment_edit["description"] = edit_description
 
             with json_path.open("w") as f:
                 json.dump(assignments,f)
 
-            st.success("Updated...")
+            st.success("Assignment is updated!")
+            time.sleep(5)
+            st.rerun()
+
+with st.sidebar:
+    st.markdown("Sidebar")
