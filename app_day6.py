@@ -169,7 +169,7 @@ if st.session_state["role"] == "Instructor":
                 edit_title = st.text_input("Title", key=f"edit_title_{assignment_edit['id']}", value= assignment_edit['title'])
                 edit_description = st.text_area("Description", key=f"edit_description_{assignment_edit['id']}", value= assignment_edit['description'])
 
-                type_options = ['Homework', 'Lab']
+                type_options = ["Homework", "Lab"]
                 selected_index = type_options.index(assignment_edit["type"])
 
                 edit_type = st.radio("Type", type_options, key=f"edit_type_{assignment_edit['id']}", index= selected_index)
