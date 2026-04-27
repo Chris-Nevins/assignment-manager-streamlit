@@ -1,8 +1,8 @@
 import streamlit as st
 
-from assignment_manager_oo.data.assignment_store import AssignmentStore
-from assignment_manager_oo.services.assignment_manager import AssignementManager
-from assignment_manager_oo.ui.assignment_dashboard import AssignmentDashboard
+from data.assignment_store import AssignmentStore
+from services.assignment_manager import AssignementManager
+from ui.assignment_dashboard import AssignmentDashboard
 
 from pathlib import Path
 
@@ -17,15 +17,15 @@ if "role" not in st.session_state:
     st.session_state['role'] = "Instructor"
 
 if "page" not in st.session_state:
-    st.session_state['page'] = "dashboard"
+    st.session_state['page'] = "Dashboard"
 
 if st.session_state["logged_in"] is True:
     if st.session_state['role'] == "Instructor":
         if st.session_state["page"] == "Dashboard":
-            store = AssignmentStore(Path("assignment_manager_oo/assignments.json"))
-            manager = AssignementManager(store.load())
+            store = AssignmentStore(Path("assignment_manager_oo/assignments.json")) # creating an object from the assignmentstore class and setting the inital object state
+            manager = AssignementManager(store.load()) # creating an object from the assignment manager class and setting the intial state of the object
             dashboard = AssignmentDashboard(manager, store)
-            dashboard.main()
+            dashboard.main() # call the orc
 
     elif st.session_state["role"] == "Student":
         pass
