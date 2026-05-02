@@ -1,10 +1,10 @@
 [
     {
-        "role": "ai-assistant",
+        "role": "assistant",
         "content": "Hi, how can i help you?"
     },
     {
         "role": "user",
-        "content": "how many orders we have?"
+        "content": "Do you know about the orders?"
     }
 ]
